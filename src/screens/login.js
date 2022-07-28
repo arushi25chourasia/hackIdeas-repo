@@ -1,18 +1,9 @@
 import React from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  Image,
-  ActivityIndicator,
-  SafeAreaView,
-} from 'react-native';
-import {doc, setDoc, getDoc} from 'firebase/firestore';
-import {db} from '../../config';
-
 import {Input, Button} from 'react-native-elements';
-import {NavigationContainer} from '@react-navigation/native';
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import {View, Text, StyleSheet, Image, ActivityIndicator} from 'react-native';
+
+import {doc, getDoc} from 'firebase/firestore';
+import {db} from '../../config';
 
 const Login = ({navigation}) => {
   const [indicate, setIndicate] = React.useState(false);
@@ -21,6 +12,7 @@ const Login = ({navigation}) => {
   const CheckEmployee = async () => {
     if (empId.length > 0) {
       setIndicate(true);
+
       getDoc(doc(db, 'employees', empId))
         .then(snapshot => {
           if (snapshot.data() !== null && snapshot.data() !== undefined) {
@@ -41,20 +33,11 @@ const Login = ({navigation}) => {
     }
   };
   return (
-    <View
-      style={{flexDirection: 'column', flex: 1, backgroundColor: '#427bd2'}}>
-      <View
-        style={{flex: 2, justifyContent: 'flex-end', paddingHorizontal: 20}}>
+    <View style={styles.container}>
+      <View style={styles.headingContainer}>
         <Text style={{fontSize: 50}}>Welcome,</Text>
       </View>
-      <View
-        style={{
-          flex: 5,
-          backgroundColor: 'white',
-          borderRadius: 50,
-          justifyContent: 'flex-start',
-          padding: 60,
-        }}>
+      <View style={styles.subContainer}>
         <Input
           label="Employee ID"
           labelStyle={{color: 'black'}}
@@ -65,15 +48,9 @@ const Login = ({navigation}) => {
         <View>
           <Button
             title="Login"
-            containerStyle={{
-              margin: 5,
-            }}
-            buttonStyle={{
-              width: '100%',
-              borderRadius: 35,
-              backgroundColor: '#427bd2',
-            }}
-            titleStyle={{color: 'white', fontWeight: '600'}}
+            containerStyle={styles.btnContainer}
+            buttonStyle={styles.btn}
+            titleStyle={styles.btnTitle}
             onPress={() => CheckEmployee()}
           />
         </View>
@@ -89,9 +66,33 @@ const Login = ({navigation}) => {
 
 const styles = StyleSheet.create({
   container: {
+    flexDirection: 'column',
     flex: 1,
-    padding: 20,
-    backgroundColor: 'red',
+    backgroundColor: '#427bd2',
+  },
+  headingContainer: {
+    flex: 2,
+    justifyContent: 'flex-end',
+    paddingHorizontal: 20,
+  },
+  subContainer: {
+    flex: 5,
+    backgroundColor: 'white',
+    borderRadius: 50,
+    justifyContent: 'flex-start',
+    padding: 60,
+  },
+  btnContainer: {
+    margin: 5,
+  },
+  btn: {
+    width: '100%',
+    borderRadius: 35,
+    backgroundColor: '#427bd2',
+  },
+  btnTitle: {
+    color: 'white',
+    fontWeight: '600',
   },
 });
 

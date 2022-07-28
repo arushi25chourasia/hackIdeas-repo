@@ -1,12 +1,5 @@
 import React from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  Image,
-  ActivityIndicator,
-  SafeAreaView,
-} from 'react-native';
+import {View, StyleSheet, Image} from 'react-native';
 
 const Logo = ({navigation}) => {
   React.useEffect(() => {
