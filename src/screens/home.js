@@ -18,9 +18,50 @@ import {db} from '../../config';
 const Home = ({navigation}) => {
   const [activeChallenges, setActiveChallenges] = React.useState([]);
   const [loading, setLoading] = React.useState(true);
+  const [filterData, setfilterData] = React.useState([]);
+
+  const SortByVote = () => {
+    const dummArr = activeChallenges;
+
+    for (let i = 0; i < dummArr.length; i++) {
+      for (let j = i + 1; j < dummArr.length; j++) {
+        let temp = {};
+        if (dummArr[i].like > dummArr[j].like) {
+          temp = dummArr[i];
+          dummArr[i] = dummArr[j];
+          dummArr[j] = temp;
+        }
+      }
+    }
+    setfilterData(dummArr);
+  };
+
+  const SortByCreationDate = () => {
+    setfilterData([]);
+
+    const dummArr = activeChallenges;
+
+    for (let i = 0; i < dummArr.length; i++) {
+      for (let j = i + 1; j < dummArr.length; j++) {
+        let temp = {};
+        if (dummArr[i].CREATED_ON > dummArr[j].CREATED_ON) {
+          temp = dummArr[i];
+          dummArr[i] = dummArr[j];
+          dummArr[j] = temp;
+        }
+      }
+    }
+    setfilterData(dummArr);
+  };
 
   const onRefresh = React.useCallback(() => {
     setLoading(true);
+    setfilterData([]);
+  }, []);
+
+  const onUpdation = React.useCallback(() => {
+    setLoading(true);
+    setfilterData([]);
   }, []);
 
   useEffect(() => {
@@ -47,7 +88,16 @@ const Home = ({navigation}) => {
     <View style={styles.container}>
       <View style={styles.heading}>
         <Text style={styles.headingTxt}>HackIdeas</Text>
-        <Image source={require('../assets/filter.png')} />
+      </View>
+      <View style={styles.rightBtnView}>
+        <TouchableOpacity style={styles.button} onPress={() => SortByVote()}>
+          <Text>Sort By vote</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => SortByCreationDate()}>
+          <Text>Sort By Creation Date</Text>
+        </TouchableOpacity>
       </View>
       <View style={styles.loadingView}>
         {loading ? (
@@ -59,9 +109,17 @@ const Home = ({navigation}) => {
             refreshControl={
               <RefreshControl refreshing={loading} onRefresh={onRefresh} />
             }>
-            {activeChallenges.map((item, index) => {
-              return <DisplayCard data={item} key={index} />;
-            })}
+            {filterData.length > 0
+              ? filterData.map(item => {
+                  return (
+                    <DisplayCard data={item} key={item.id} load={onUpdation} />
+                  );
+                })
+              : activeChallenges.map(item => {
+                  return (
+                    <DisplayCard data={item} key={item.id} load={onUpdation} />
+                  );
+                })}
           </ScrollView>
         )}
       </View>
@@ -124,6 +182,20 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     borderWidth: 8,
     borderColor: '#EAF2F8',
+  },
+  rightBtnView: {
+    alignItems: 'flex-end',
+    flexDirection: 'row',
+    paddingHorizontal: 15,
+  },
+  button: {
+    padding: 7,
+    margin: 4,
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#A9CCE3',
+    borderRadius: 40,
+    borderColor: '#1B4F72',
   },
 });
 

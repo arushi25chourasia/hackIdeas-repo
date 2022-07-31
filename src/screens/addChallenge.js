@@ -26,7 +26,7 @@ const AddChallenge = ({navigation}) => {
 
     const docData = {
       CREATED_BY: formData.CREATED_BY.split(' '),
-      CREATED_ON: new Date(),
+      CREATED_ON: new Date().toString(),
       TAGS: formData.TAGS.split(' '),
       description: formData.description,
       like: 0,

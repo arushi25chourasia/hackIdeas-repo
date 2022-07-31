@@ -2,10 +2,23 @@ import React from 'react';
 import {View, Text, StyleSheet, Image, TouchableOpacity} from 'react-native';
 import {Button, Card} from 'react-native-elements';
 
-const DisplayCard = ({data}) => {
+import {doc, setDoc} from 'firebase/firestore';
+import {db} from '../../config';
+
+const DisplayCard = ({data, load}) => {
   let tech_st = '';
   data['tech-stack'].forEach(tech => (tech_st = tech_st + ` ${tech} |`));
 
+  const updateLike = id => {
+    const myDoc = doc(db, 'challenges', id);
+    setDoc(myDoc, {like: data.like + 1}, {merge: true})
+      .then(res => {
+        load();
+      })
+      .catch(er => {
+        console.log('err occ');
+      });
+  };
   return (
     <Card containerStyle={styles.cardContainer}>
       <Card.Title h4 style={styles.cardTitle}>
@@ -34,17 +47,12 @@ const DisplayCard = ({data}) => {
 
       <View style={styles.subContainer}>
         <View style={styles.voteBox}>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => updateLike(data.id)}>
             <Image source={require('../assets/like.png')} />
           </TouchableOpacity>
           <Text style={styles.likeCnt}>{data.like}</Text>
         </View>
-        <Button
-          title="More Info"
-          containerStyle={styles.cardBtn}
-          buttonStyle={styles.cardBtnStyle}
-          titleStyle={styles.cardBtnTitle}
-        />
+        <Text>{`${data.CREATED_ON.substr(0, 15)}`}</Text>
       </View>
     </Card>
   );
